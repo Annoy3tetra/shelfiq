@@ -1,0 +1,29 @@
+# Python
+backend/venv/
+backend/__pycache__/
+backend/**/*.pyc
+backend/.env
+
+# Alembic cache
+backend/alembic/__pycache__/
+
+# Node
+frontend/node_modules/
+
+# React/Vite build
+frontend/dist/
+
+# Environment files
+frontend/.env
+frontend/.env.local
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
