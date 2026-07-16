@@ -71,6 +71,116 @@ button:disabled {
   }
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   Sidebar Ambient Background — Animation System
+   Three layers: AnimatedGrid · FloatingParticles · ScannerEffect
+   All animations use transform/opacity only (GPU-composited).
+   ═══════════════════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: no-preference) {
+
+  /* ── 1. Animated Grid ──────────────────────────────────────── */
+
+  /* Primary grid: 28px cells, diagonal drift */
+  @keyframes sidebar-grid-drift {
+    0%   { background-position: 0 0, 0 0; }
+    100% { background-position: 28px 28px, 28px 28px; }
+  }
+
+  /* Secondary grid: slower counter-drift for parallax depth */
+  @keyframes sidebar-grid-drift-slow {
+    0%   { background-position: 0 0, 0 0; }
+    100% { background-position: -56px 56px, -56px 56px; }
+  }
+
+  /* Grid opacity breathing */
+  @keyframes sidebar-grid-breathe {
+    0%, 100% { opacity: 0.025; }
+    50%      { opacity: 0.055; }
+  }
+
+
+  /* ── 2. Floating Particles ─────────────────────────────────── */
+
+  /* Multi-axis float path — organic wandering motion */
+  @keyframes sidebar-fp-drift {
+    0%   { transform: translate(0, 0); }
+    20%  { transform: translate(6px, -10px); }
+    40%  { transform: translate(-4px, -6px); }
+    60%  { transform: translate(8px, -14px); }
+    80%  { transform: translate(-2px, -8px); }
+    100% { transform: translate(0, 0); }
+  }
+
+  /* Opacity pulse — gentle breathing */
+  @keyframes sidebar-fp-pulse {
+    0%, 100% { opacity: 1; }
+    40%      { opacity: 0.3; }
+    60%      { opacity: 0.8; }
+  }
+
+
+  /* ── 3. Scanner Effect ─────────────────────────────────────── */
+
+  /* Full-height sweep, visible for ~15% of cycle, idle the rest */
+  @keyframes sidebar-scanner-sweep {
+    0%   { transform: translateY(-100%); opacity: 0; }
+    2%   { opacity: 0; }
+    5%   { opacity: 1; }
+    15%  { opacity: 1; }
+    18%  { opacity: 0; transform: translateY(calc(100vh + 100%)); }
+    100% { opacity: 0; transform: translateY(calc(100vh + 100%)); }
+  }
+}
+
+
+/* ── Grid utility classes ────────────────────────────────────── */
+
+.sidebar-animated-grid {
+  will-change: background-position;
+}
+
+.sidebar-animated-grid--primary {
+  background-image:
+    linear-gradient(rgba(148, 163, 184, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.045) 1px, transparent 1px);
+  background-size: 28px 28px;
+  animation:
+    sidebar-grid-drift 16s linear infinite,
+    sidebar-grid-breathe 10s ease-in-out infinite;
+}
+
+.sidebar-animated-grid--secondary {
+  background-image:
+    linear-gradient(rgba(59, 130, 246, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(59, 130, 246, 0.02) 1px, transparent 1px);
+  background-size: 56px 56px;
+  animation:
+    sidebar-grid-drift-slow 40s linear infinite,
+    sidebar-grid-breathe 14s ease-in-out infinite;
+  animation-delay: 0s, 3s;
+}
+
+
+/* ── Particle utility classes ────────────────────────────────── */
+
+.sidebar-fp {
+  animation:
+    sidebar-fp-drift var(--fp-drift, 18s) ease-in-out infinite,
+    sidebar-fp-pulse var(--fp-pulse, 7s) ease-in-out infinite;
+  animation-delay: var(--fp-delay, 0s);
+  will-change: transform, opacity;
+}
+
+
+/* ── Scanner utility class ───────────────────────────────────── */
+
+.sidebar-scanner {
+  animation: sidebar-scanner-sweep 12s ease-in-out infinite;
+  animation-delay: 4s;
+  will-change: transform, opacity;
+}
+
 .dark .bg-\[\#F8FAFC\],
 .dark .bg-slate-50,
 .dark .bg-gray-100 {

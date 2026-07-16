@@ -40,4 +40,49 @@ export const motionPresets = {
     exit: { opacity: 0, y: -6, scale: 0.98 },
     transition: { duration: 0.14, ease: "easeOut" },
   },
+  sidebar: {
+    container: {
+      animate: {
+        transition: {
+          staggerChildren: 0.06,
+          delayChildren: 0.1,
+        },
+      },
+    },
+    item: {
+      initial: { opacity: 0, x: -12 },
+      animate: { opacity: 1, x: 0 },
+      transition: {
+        type: "spring",
+        stiffness: 400,
+        damping: 30,
+      },
+    },
+    logo: {
+      initial: { opacity: 0, scale: 0.92 },
+      animate: { opacity: 1, scale: 1 },
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 25,
+        delay: 0.04,
+      },
+    },
+    mobileDrawer: {
+      initial: { x: "-100%" },
+      animate: { x: 0 },
+      exit: { x: "-100%" },
+      transition: {
+        type: "spring",
+        damping: 26,
+        stiffness: 300,
+      },
+    },
+    overlay: {
+      initial: { opacity: 0 },
+      animate: { opacity: 1 },
+      exit: { opacity: 0 },
+      transition: { duration: 0.2 },
+    },
+  },
 };

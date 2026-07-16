@@ -18,6 +18,8 @@ class User(Base):
 
     role = Column(String, nullable=False)
 
+    profile_image_url = Column(String, nullable=True)
+
     is_active = Column(Boolean, default=True)
 
     created_at = Column(

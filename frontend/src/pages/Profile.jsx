@@ -24,6 +24,8 @@ import {
 import Layout from "../components/layout/Layout";
 import { useAuth } from "../context/AuthContext";
 import Card from "../components/ui/Card";
+import Avatar from "../components/ui/Avatar";
+import ProfileImageUploaderModal from "../components/ui/ProfileImageUploaderModal";
 import { cn } from "../utils/cn";
 
 const activeSessionsData = [
@@ -64,6 +66,7 @@ const Profile = () => {
   const { user, setUser } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const currentTab = searchParams.get("tab") || "profile";
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
   // Tab State
   const handleTabChange = (tabId) => {
@@ -177,13 +180,17 @@ const Profile = () => {
         <div className="relative mb-8 overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-6 dark:border-slate-800 dark:bg-slate-900 shadow-[0_16px_40px_rgba(15,23,42,0.02)]">
           <div className="absolute top-0 right-0 w-[400px] h-[400px] rounded-full bg-gradient-to-tr from-blue-600/5 to-cyan-500/5 blur-3xl pointer-events-none" />
           <div className="flex flex-col sm:flex-row items-center gap-6 relative z-10">
-            {/* Big Avatar */}
-            <div className="relative h-20 w-20 shrink-0">
-              <div className="grid h-full w-full place-items-center rounded-2xl bg-gradient-to-tr from-blue-500 to-indigo-650 text-2xl font-bold text-white shadow-lg shadow-blue-500/20">
-                {personalInfo.name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2)}
-              </div>
-              <span className="absolute bottom-[-2px] right-[-2px] flex h-5 w-5 items-center justify-center rounded-full bg-white dark:bg-slate-900 border-2 border-white dark:border-slate-900 shadow-sm text-emerald-500">
-                <span className="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse" />
+            {/* Big Avatar with Editable Overlay */}
+            <div className="relative">
+              <Avatar
+                src={user?.profile_image_url}
+                name={personalInfo.name}
+                size="xl"
+                editable
+                onEditClick={() => setIsUploadModalOpen(true)}
+              />
+              <span className="absolute bottom-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-white dark:bg-slate-900 border-2 border-white dark:border-slate-900 shadow-sm text-emerald-500 z-20">
+                <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
               </span>
             </div>
             {/* Details */}
@@ -261,15 +268,23 @@ const Profile = () => {
 
                       {/* Photo Upload Container */}
                       <div className="flex flex-col sm:flex-row items-center gap-4 py-4 border-y border-slate-100 dark:border-slate-800">
-                        <div className="h-16 w-16 rounded-xl bg-slate-50 dark:bg-slate-850 flex items-center justify-center border border-dashed border-slate-300 dark:border-slate-700 text-slate-400 shrink-0">
-                          <User size={24} />
-                        </div>
+                        <Avatar
+                          src={user?.profile_image_url}
+                          name={personalInfo.name}
+                          size="lg"
+                          editable
+                          onEditClick={() => setIsUploadModalOpen(true)}
+                        />
                         <div className="text-center sm:text-left">
                           <h4 className="text-sm font-semibold text-slate-800 dark:text-slate-200">Avatar Photo</h4>
-                          <p className="text-xs text-slate-400 mt-0.5 mb-2.5">JPG, PNG up to 2MB.</p>
-                          <button type="button" className="inline-flex items-center gap-1.5 text-xs font-bold py-1.5 px-3 rounded-lg border border-slate-200 text-slate-650 hover:bg-slate-55 dark:border-slate-800 dark:text-slate-300 dark:hover:bg-slate-800 transition-colors">
+                          <p className="text-xs text-slate-400 mt-0.5 mb-2.5">PNG, JPG, or WEBP up to 5MB.</p>
+                          <button
+                            type="button"
+                            onClick={() => setIsUploadModalOpen(true)}
+                            className="inline-flex items-center gap-1.5 text-xs font-bold py-1.5 px-3 rounded-lg border border-slate-200 text-slate-650 hover:bg-slate-55 dark:border-slate-800 dark:text-slate-300 dark:hover:bg-slate-800 transition-colors"
+                          >
                             <Upload size={12} />
-                            Upload Photo
+                            Change photo
                           </button>
                         </div>
                       </div>
@@ -652,6 +667,11 @@ const Profile = () => {
           </div>
         </div>
       </div>
+
+      <ProfileImageUploaderModal
+        isOpen={isUploadModalOpen}
+        onClose={() => setIsUploadModalOpen(false)}
+      />
     </Layout>
   );
 };

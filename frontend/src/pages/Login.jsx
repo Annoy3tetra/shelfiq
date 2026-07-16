@@ -20,6 +20,7 @@ import {
 import { loginUser, registerUser } from "../services/authService";
 import { useAuth } from "../context/AuthContext";
 import { ShelfIQLogo, ShelfIQIcon } from "../components/ui/Logo";
+import ForgotPasswordModal from "../components/auth/ForgotPasswordModal";
 
 const floatingItems = [
   { Icon: ShelfIQIcon, size: 24, top: "15%", left: "15%", delay: 0, duration: 8 },
@@ -36,6 +37,7 @@ const Login = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [apiError, setApiError] = useState("");
+  const [showForgotModal, setShowForgotModal] = useState(false);
   
   const { 
     register, 
@@ -335,9 +337,13 @@ const Login = () => {
                     Password
                   </label>
                   {!isSignUp && (
-                    <a href="#" className="text-xs font-semibold text-blue-600 hover:text-blue-700 transition-colors">
+                    <button
+                      type="button"
+                      onClick={() => setShowForgotModal(true)}
+                      className="text-xs font-semibold text-blue-600 hover:text-blue-700 transition-colors"
+                    >
                       Forgot password?
-                    </a>
+                    </button>
                   )}
                 </div>
                 <div className="relative">
@@ -455,6 +461,11 @@ const Login = () => {
           </div>
         </div>
       </div>
+
+      <ForgotPasswordModal
+        isOpen={showForgotModal}
+        onClose={() => setShowForgotModal(false)}
+      />
     </motion.div>
   );
 };

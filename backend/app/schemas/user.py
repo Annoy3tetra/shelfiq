@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 
 from pydantic import BaseModel, EmailStr
 
@@ -8,6 +9,7 @@ class UserCreate(BaseModel):
     email: EmailStr
     password: str
     role: str
+    profile_image_url: Optional[str] = None
 
 
 class UserResponse(BaseModel):
@@ -15,6 +17,7 @@ class UserResponse(BaseModel):
     name: str
     email: EmailStr
     role: str
+    profile_image_url: Optional[str] = None
     is_active: bool
     created_at: datetime
 

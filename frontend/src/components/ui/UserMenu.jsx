@@ -16,6 +16,7 @@ import {
 import { useAuth } from "../../context/AuthContext";
 import { motionPresets } from "../../constants/theme";
 import SettingsModal from "./SettingsModal";
+import Avatar from "./Avatar";
 import { cn } from "../../utils/cn";
 
 const UserMenu = () => {
@@ -44,12 +45,6 @@ const UserMenu = () => {
   const name = user?.name || "Sarah Jenkins";
   const email = user?.email || "sarah.jenkins@shelfiq.com";
   const role = user?.role || "admin";
-  const initials = name
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2) || "SJ";
 
   // Check current theme
   const [theme, setTheme] = useState(() => {
@@ -88,17 +83,12 @@ const UserMenu = () => {
         aria-expanded={open}
         aria-haspopup="menu"
       >
-        {/* Avatar Container with Online Indicator */}
-        <div className="relative h-7 w-7 shrink-0">
-          <div className="grid h-full w-full place-items-center rounded-full bg-gradient-to-tr from-blue-500 to-indigo-650 text-[11px] font-bold text-white shadow-md shadow-blue-500/10">
-            {initials}
-          </div>
-          {/* Pulsing online green dot */}
-          <span className="absolute bottom-0 right-0 flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500 border border-white dark:border-slate-950" />
-          </span>
-        </div>
+        <Avatar
+          src={user?.profile_image_url}
+          name={name}
+          size="sm"
+          showOnlineIndicator
+        />
 
         <div className="hidden leading-tight lg:block">
           <span className="block text-sm font-semibold text-slate-850 dark:text-slate-100">
@@ -121,9 +111,11 @@ const UserMenu = () => {
             {/* Header info card */}
             <div className="px-3.5 py-3 border-b border-slate-100 dark:border-slate-800/80 mb-1">
               <div className="flex items-center gap-3">
-                <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-gradient-to-tr from-blue-500 to-indigo-650 text-sm font-bold text-white shadow-md shadow-blue-500/10">
-                  {initials}
-                </div>
+                <Avatar
+                  src={user?.profile_image_url}
+                  name={name}
+                  size="md"
+                />
                 <div className="min-w-0">
                   <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100 truncate">
                     {name}

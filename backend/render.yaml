@@ -1,0 +1,32 @@
+databases:
+  - name: shelfiq-db
+    databaseName: bookstore_erp
+    user: postgres
+    plan: free
+
+services:
+  - type: web
+    name: shelfiq-backend
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    preDeployCommand: alembic upgrade head
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.10
+      - key: DATABASE_URL
+        fromDatabase:
+          name: shelfiq-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ALGORITHM
+        value: HS256
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: 1440
+      - key: FRONTEND_URL
+        value: https://shelfiq.vercel.app
+      - key: CORS_ORIGINS
+        value: https://shelfiq.vercel.app,http://localhost:5173

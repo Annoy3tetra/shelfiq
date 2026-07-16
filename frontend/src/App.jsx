@@ -7,6 +7,7 @@ import Sales from "./pages/Sales";
 import Forecast from "./pages/Forecast";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
+import ResetPassword from "./pages/ResetPassword";
 import ProtectedRoute from "./components/layout/ProtectedRoute";
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Login />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
 
         <Route
           path="/dashboard"
