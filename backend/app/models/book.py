@@ -4,7 +4,8 @@ from sqlalchemy import (
     Enum,
     Float,
     Integer,
-    String
+    String,
+    ForeignKey
 )
 from sqlalchemy.sql import func
 
@@ -78,8 +79,19 @@ class Book(Base):
         server_default=func.now(),
         onupdate=func.now()
     )
+
+    user_id = Column(
+        Integer,
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=True
+    )
+
+    owner = relationship(
+        "User",
+        back_populates="books"
+    )
     
     sale_items = relationship(
-    "SaleItem",
-    back_populates="book"
+        "SaleItem",
+        back_populates="book"
     )

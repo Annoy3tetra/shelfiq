@@ -26,6 +26,11 @@ class User(Base):
     )
     
     sales = relationship(
-    "Sale",
-    back_populates="employee"
+        "Sale",
+        back_populates="employee"
+    )
+
+    books = relationship(
+        "Book",
+        back_populates="owner"
     )

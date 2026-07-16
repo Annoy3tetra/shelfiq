@@ -45,7 +45,8 @@ def create_new_book(
 
     existing_book = get_book_by_isbn(
         db,
-        book.isbn
+        book.isbn,
+        current_admin.id
     )
 
     if existing_book:
@@ -57,7 +58,8 @@ def create_new_book(
 
     return create_book(
         db,
-        book
+        book,
+        current_admin.id
     )
     
 @router.get(
@@ -87,7 +89,9 @@ def fetch_books(
 
     skip = (page - 1) * limit
 
-    books = db.query(Book).offset(skip).limit(limit).all()
+    books = db.query(Book).filter(
+        Book.user_id == current_user.id
+    ).offset(skip).limit(limit).all()
 
     return books
 
@@ -103,7 +107,8 @@ def fetch_book(
 
     book = get_book_by_id(
         db,
-        book_id
+        book_id,
+        current_user.id
     )
 
     if not book:
@@ -128,7 +133,8 @@ def edit_book(
 
     book = get_book_by_id(
         db,
-        book_id
+        book_id,
+        current_admin.id
     )
 
     if not book:
@@ -155,7 +161,8 @@ def remove_book(
 
     book = get_book_by_id(
         db,
-        book_id
+        book_id,
+        current_admin.id
     )
 
     if not book:

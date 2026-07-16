@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   Mail, 
   Lock, 
+  User,
   Eye, 
   EyeOff, 
   Loader2, 
@@ -16,7 +17,7 @@ import {
   Layers 
 } from "lucide-react";
 
-import { loginUser } from "../services/authService";
+import { loginUser, registerUser } from "../services/authService";
 import { useAuth } from "../context/AuthContext";
 import { ShelfIQLogo, ShelfIQIcon } from "../components/ui/Logo";
 
@@ -32,17 +33,21 @@ const Login = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
   
+  const [isSignUp, setIsSignUp] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [apiError, setApiError] = useState("");
   
   const { 
     register, 
     handleSubmit, 
+    reset,
     formState: { errors, isSubmitting } 
   } = useForm({
     defaultValues: {
+      name: "",
       email: "",
       password: "",
+      role: "admin",
       rememberMe: false
     }
   });
@@ -50,10 +55,16 @@ const Login = () => {
   const onSubmit = async (data) => {
     setApiError("");
     try {
+      if (isSignUp) {
+        // Register new user
+        await registerUser(data.name, data.email, data.password, data.role);
+      }
+      
+      // Perform Sign In
       const response = await loginUser(data.email, data.password);
       login(response.access_token);
       
-      // If remember me is checked, we could store email or handle accordingly
+      // If remember me is checked, store email
       if (data.rememberMe) {
         localStorage.setItem("remembered_email", data.email);
       } else {
@@ -62,11 +73,16 @@ const Login = () => {
       
       navigate("/dashboard");
     } catch (error) {
-      console.error("Login failed:", error);
-      // Try to get a friendly error message
-      const errorMsg = error.response?.data?.detail || "Invalid email or password. Please try again.";
+      console.error("Auth action failed:", error);
+      const errorMsg = error.response?.data?.detail || "Authentication failed. Please verify credentials or contact system admin.";
       setApiError(errorMsg);
     }
+  };
+
+  const handleModeToggle = () => {
+    setIsSignUp(!isSignUp);
+    setApiError("");
+    reset(); // Clear previous validations and values
   };
 
   return (
@@ -74,7 +90,7 @@ const Login = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="min-h-screen flex bg-[#F8FAFC]"
+      className="min-h-screen flex bg-[#F8FAFC] dark:bg-slate-950 transition-colors duration-200"
     >
       {/* Left Section - Hero/Brand (Hidden on Mobile) */}
       <div className="hidden lg:flex lg:w-1/2 relative bg-[#0F172A] overflow-hidden items-center justify-center p-12 select-none">
@@ -200,7 +216,7 @@ const Login = () => {
         </div>
       </div>
 
-      {/* Right Section - Login Form */}
+      {/* Right Section - Login/Signup Form */}
       <div className="w-full lg:w-1/2 flex flex-col justify-center items-center p-6 sm:p-12 md:p-16 relative">
         <div className="w-full max-w-[440px]">
           {/* Logo visible on Mobile only */}
@@ -210,11 +226,11 @@ const Login = () => {
 
           {/* Welcome Header */}
           <div className="text-center lg:text-left mb-8">
-            <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-2">
-              Welcome back
+            <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100 mb-2">
+              {isSignUp ? "Create an account" : "Welcome back"}
             </h2>
-            <p className="text-sm text-slate-500">
-              Sign in to manage your bookstore dashboard
+            <p className="text-sm text-slate-500 dark:text-slate-455">
+              {isSignUp ? "Register a new operator profile" : "Sign in to manage your bookstore dashboard"}
             </p>
           </div>
 
@@ -225,27 +241,61 @@ const Login = () => {
                 initial={{ opacity: 0, y: -8 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
-                className="mb-5 p-4 rounded-xl bg-red-50 border border-red-100 flex items-start gap-3"
+                className="mb-5 p-4 rounded-xl bg-red-50 border border-red-100 dark:bg-red-950/20 dark:border-red-900/30 flex items-start gap-3"
               >
-                <AlertCircle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
-                <div className="text-sm text-red-700 leading-normal font-medium">
+                <AlertCircle className="w-5 h-5 text-red-650 shrink-0 mt-0.5" />
+                <div className="text-sm text-red-700 dark:text-red-400 leading-normal font-medium">
                   {apiError}
                 </div>
               </motion.div>
             )}
           </AnimatePresence>
 
-          {/* Login Card */}
+          {/* Form Card */}
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
-            className="bg-white border border-slate-200/80 rounded-2xl p-6 sm:p-8 shadow-[0_16px_40px_rgba(15,23,42,0.04)]"
+            className="bg-white border border-slate-200/80 rounded-2xl p-6 sm:p-8 shadow-[0_16px_40px_rgba(15,23,42,0.03)] dark:bg-slate-900 dark:border-slate-800"
           >
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+              
+              {/* Full Name Field (Sign Up Mode Only) */}
+              {isSignUp && (
+                <div>
+                  <label htmlFor="name" className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+                    Full name
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                      <User className="h-4.5 w-4.5" />
+                    </div>
+                    <input
+                      id="name"
+                      type="text"
+                      disabled={isSubmitting}
+                      placeholder="Sarah Jenkins"
+                      className={`w-full pl-10 pr-4 py-2.5 bg-slate-50 border rounded-xl text-sm transition-all outline-none text-slate-900 placeholder:text-slate-400 focus:bg-white dark:bg-slate-900/50 dark:border-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:bg-slate-950
+                        ${errors.name 
+                          ? "border-red-300 focus:border-red-500 focus:ring-4 focus:ring-red-100" 
+                          : "border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
+                        }`}
+                      {...register("name", { 
+                        required: "Full name is required"
+                      })}
+                    />
+                  </div>
+                  {errors.name && (
+                    <p className="mt-1.5 text-xs text-red-600 font-medium">
+                      {errors.name.message}
+                    </p>
+                  )}
+                </div>
+              )}
+
               {/* Email Field */}
               <div>
-                <label htmlFor="email" className="block text-sm font-semibold text-slate-700 mb-1.5">
+                <label htmlFor="email" className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                   Email address
                 </label>
                 <div className="relative">
@@ -257,7 +307,7 @@ const Login = () => {
                     type="email"
                     disabled={isSubmitting}
                     placeholder="name@company.com"
-                    className={`w-full pl-10 pr-4 py-2.5 bg-slate-50/50 border rounded-xl text-sm transition-all outline-none text-slate-900 placeholder:text-slate-400 focus:bg-white
+                    className={`w-full pl-10 pr-4 py-2.5 bg-slate-50 border rounded-xl text-sm transition-all outline-none text-slate-900 placeholder:text-slate-400 focus:bg-white dark:bg-slate-900/50 dark:border-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:bg-slate-950
                       ${errors.email 
                         ? "border-red-300 focus:border-red-500 focus:ring-4 focus:ring-red-100" 
                         : "border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
@@ -272,7 +322,7 @@ const Login = () => {
                   />
                 </div>
                 {errors.email && (
-                  <p className="mt-1.5 text-xs text-red-600 font-medium flex items-center gap-1">
+                  <p className="mt-1.5 text-xs text-red-600 font-medium">
                     {errors.email.message}
                   </p>
                 )}
@@ -281,12 +331,14 @@ const Login = () => {
               {/* Password Field */}
               <div>
                 <div className="flex justify-between items-center mb-1.5">
-                  <label htmlFor="password" className="block text-sm font-semibold text-slate-700">
+                  <label htmlFor="password" className="block text-sm font-semibold text-slate-700 dark:text-slate-300">
                     Password
                   </label>
-                  <a href="#" className="text-xs font-semibold text-blue-600 hover:text-blue-700 transition-colors">
-                    Forgot password?
-                  </a>
+                  {!isSignUp && (
+                    <a href="#" className="text-xs font-semibold text-blue-600 hover:text-blue-700 transition-colors">
+                      Forgot password?
+                    </a>
+                  )}
                 </div>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
@@ -297,7 +349,7 @@ const Login = () => {
                     type={showPassword ? "text" : "password"}
                     disabled={isSubmitting}
                     placeholder="••••••••"
-                    className={`w-full pl-10 pr-10 py-2.5 bg-slate-50/50 border rounded-xl text-sm transition-all outline-none text-slate-900 placeholder:text-slate-400 focus:bg-white
+                    className={`w-full pl-10 pr-10 py-2.5 bg-slate-50 border rounded-xl text-sm transition-all outline-none text-slate-900 placeholder:text-slate-400 focus:bg-white dark:bg-slate-900/50 dark:border-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:bg-slate-950
                       ${errors.password 
                         ? "border-red-300 focus:border-red-500 focus:ring-4 focus:ring-red-100" 
                         : "border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
@@ -314,31 +366,51 @@ const Login = () => {
                     type="button"
                     tabIndex="-1"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-655 transition-colors"
                   >
                     {showPassword ? <EyeOff className="h-4.5 w-4.5" /> : <Eye className="h-4.5 w-4.5" />}
                   </button>
                 </div>
                 {errors.password && (
-                  <p className="mt-1.5 text-xs text-red-600 font-medium flex items-center gap-1">
+                  <p className="mt-1.5 text-xs text-red-600 font-medium">
                     {errors.password.message}
                   </p>
                 )}
               </div>
 
-              {/* Remember Me */}
-              <div className="flex items-center">
-                <input
-                  id="rememberMe"
-                  type="checkbox"
-                  disabled={isSubmitting}
-                  className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500/20 focus:ring-offset-0 transition-colors cursor-pointer"
-                  {...register("rememberMe")}
-                />
-                <label htmlFor="rememberMe" className="ml-2 text-xs font-semibold text-slate-600 select-none cursor-pointer">
-                  Remember this device
-                </label>
-              </div>
+              {/* Operator Role Selector (Sign Up Mode Only) */}
+              {isSignUp && (
+                <div>
+                  <label htmlFor="role" className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+                    Operator Role
+                  </label>
+                  <select
+                    id="role"
+                    disabled={isSubmitting}
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm transition-all outline-none text-slate-900 focus:bg-white dark:bg-slate-900/50 dark:border-slate-800 dark:text-slate-100 dark:focus:bg-slate-950 cursor-pointer font-medium"
+                    {...register("role")}
+                  >
+                    <option value="admin" className="dark:bg-slate-900 text-slate-900 dark:text-slate-100">Admin</option>
+                    <option value="staff" className="dark:bg-slate-900 text-slate-900 dark:text-slate-100">Staff</option>
+                  </select>
+                </div>
+              )}
+
+              {/* Remember Me (Sign In Mode Only) */}
+              {!isSignUp && (
+                <div className="flex items-center py-1">
+                  <input
+                    id="rememberMe"
+                    type="checkbox"
+                    disabled={isSubmitting}
+                    className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500/20 focus:ring-offset-0 transition-colors cursor-pointer"
+                    {...register("rememberMe")}
+                  />
+                  <label htmlFor="rememberMe" className="ml-2 text-xs font-semibold text-slate-600 dark:text-slate-400 select-none cursor-pointer">
+                    Remember this device
+                  </label>
+                </div>
+              )}
 
               {/* Submit Button */}
               <button
@@ -349,16 +421,27 @@ const Login = () => {
                 {isSubmitting ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>Signing in...</span>
+                    <span>{isSignUp ? "Creating account..." : "Signing in..."}</span>
                   </>
                 ) : (
                   <>
-                    <span>Sign In</span>
-                    <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
+                    <span>{isSignUp ? "Create Account" : "Sign In"}</span>
+                    <ArrowRight className="w-4 h-4" />
                   </>
                 )}
               </button>
             </form>
+
+            {/* Toggle Link inside the Card */}
+            <div className="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800 text-center">
+              <button
+                type="button"
+                onClick={handleModeToggle}
+                className="text-xs font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
+              >
+                {isSignUp ? "Already have an account? Sign in" : "Don't have an account? Sign up"}
+              </button>
+            </div>
           </motion.div>
 
           {/* Prompt to switch accounts or registration placeholder if relevant */}

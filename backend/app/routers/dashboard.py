@@ -24,11 +24,16 @@ def get_summary(
     current_user: User = Depends(get_current_user)
 ):
 
-    total_books = db.query(Book).count()
+    total_books = db.query(Book).filter(
+        Book.user_id == current_user.id
+    ).count()
 
-    total_sales_count = db.query(Sale).count()
+    total_sales_count = db.query(Sale).filter(
+        Sale.employee_id == current_user.id
+    ).count()
 
     low_stock_books = db.query(Book).filter(
+        Book.user_id == current_user.id,
         Book.stock_quantity <= Book.reorder_level
     ).count()
 
@@ -40,6 +45,7 @@ def get_summary(
             0
         )
     ).filter(
+        Sale.employee_id == current_user.id,
         func.date(Sale.sale_date) == today
     ).scalar()
 
@@ -67,6 +73,9 @@ def get_top_books(
         .join(
             SaleItem,
             Book.id == SaleItem.book_id
+        )
+        .filter(
+            Book.user_id == current_user.id
         )
         .group_by(
             Book.id
@@ -103,6 +112,9 @@ def sales_trend(
             func.sum(
                 Sale.total_amount
             ).label("revenue")
+        )
+        .filter(
+            Sale.employee_id == current_user.id
         )
         .group_by(
             func.date(
