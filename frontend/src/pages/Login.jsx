@@ -174,7 +174,7 @@ const Login = () => {
               transition={{ delay: 0.6, duration: 0.6 }}
               className="text-slate-400 text-lg leading-relaxed mb-8"
             >
-              Streamline bookstore operations, optimize inventory, forecast sales, and manage financials — all in one unified, real-time platform.
+              Streamline bookstore operations, optimize inventory, generate AI insights & predictions, and manage financials — all in one unified, real-time platform.
             </motion.p>
 
             <motion.div

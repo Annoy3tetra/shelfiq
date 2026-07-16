@@ -42,7 +42,7 @@ export const ShelfIQIcon = ({ className = "h-8 w-8", ...props }) => {
         className="stroke-slate-400 dark:stroke-slate-600"
       />
       
-      {/* Intelligent AI Sparkle / Forecast Dot */}
+      {/* Intelligent AI Sparkle / Insights AI Dot */}
       <circle cx="20" cy="3" r="1.5" fill="#06B6D4" className="animate-pulse" />
     </svg>
   );

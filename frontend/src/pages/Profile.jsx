@@ -138,7 +138,7 @@ const Profile = () => {
   const [notifications, setNotifications] = useState({
     lowStock: true,
     newSales: true,
-    forecast: false,
+    insightsAI: false,
     system: true
   });
 
@@ -575,13 +575,13 @@ const Profile = () => {
                         <label className="flex items-start gap-3 cursor-pointer">
                           <input
                             type="checkbox"
-                            checked={notifications.forecast}
-                            onChange={(e) => setNotifications(prev => ({ ...prev, forecast: e.target.checked }))}
+                            checked={notifications.insightsAI}
+                            onChange={(e) => setNotifications(prev => ({ ...prev, insightsAI: e.target.checked }))}
                             className="h-4 w-4 mt-0.5 rounded border-slate-300 text-blue-600 focus:ring-blue-500/20"
                           />
                           <div>
-                            <span className="text-sm font-bold text-slate-850 dark:text-slate-200 block">AI Forecast Insights</span>
-                            <span className="text-xs text-slate-400 dark:text-slate-500">Receive monthly emails summarizing AI reorder predictions and market demands.</span>
+                            <span className="text-sm font-bold text-slate-850 dark:text-slate-200 block">Insights AI & Demand Forecasting</span>
+                            <span className="text-xs text-slate-400 dark:text-slate-500">Receive notifications summarizing ML reorder predictions and demand trends.</span>
                           </div>
                         </label>
 

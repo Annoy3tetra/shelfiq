@@ -314,8 +314,8 @@ const SettingsModal = ({ open, onClose }) => {
                       className="h-4 w-4 mt-0.5 rounded border-slate-300 text-blue-600 focus:ring-blue-500/20"
                     />
                     <div>
-                      <span className="text-sm font-bold text-slate-800 dark:text-slate-200 block">Enable AI Demand Forecasting</span>
-                      <span className="text-xs text-slate-400 dark:text-slate-500">Allow machine learning algorithms to compute seasonal demands for inventories.</span>
+                      <span className="text-sm font-bold text-slate-800 dark:text-slate-200 block">Enable Insights AI & Demand Forecasting</span>
+                      <span className="text-xs text-slate-400 dark:text-slate-500">Allow machine learning algorithms to compute revenue predictions and restock alerts.</span>
                     </div>
                   </label>
 

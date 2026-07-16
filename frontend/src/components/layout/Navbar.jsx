@@ -10,7 +10,7 @@ const pageTitles = {
   "/dashboard": "Dashboard",
   "/books": "Books",
   "/sales": "Sales",
-  "/forecast": "Forecast",
+  "/insights-ai": "Insights AI",
 };
 
 const Navbar = ({ onMenuClick }) => {

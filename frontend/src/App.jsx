@@ -4,7 +4,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Books from "./pages/Books";
 import Sales from "./pages/Sales";
-import Forecast from "./pages/Forecast";
+import InsightsAI from "./pages/InsightsAI";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 import ResetPassword from "./pages/ResetPassword";
@@ -42,10 +42,10 @@ function App() {
           }
         />
         <Route
-          path="/forecast"
+          path="/insights-ai"
           element={
             <ProtectedRoute>
-              <Forecast />
+              <InsightsAI />
             </ProtectedRoute>
           }
         />

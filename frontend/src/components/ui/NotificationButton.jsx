@@ -31,8 +31,8 @@ const initialNotifications = [
   },
   {
     id: 3,
-    category: "forecast",
-    title: "AI Forecast Update",
+    category: "insights-ai",
+    title: "Insights AI Update",
     message: "Sci-Fi demand predicted to spike 30% next week. Restock recommended.",
     time: "2h ago",
     read: false,
@@ -58,7 +58,7 @@ const categoryConfig = {
     bgColor: "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/30 dark:text-emerald-400",
     borderColor: "border-emerald-100 dark:border-emerald-900/40",
   },
-  "forecast": {
+  "insights-ai": {
     Icon: TrendingUp,
     bgColor: "bg-indigo-50 text-indigo-600 dark:bg-indigo-950/30 dark:text-indigo-400",
     borderColor: "border-indigo-100 dark:border-indigo-900/40",

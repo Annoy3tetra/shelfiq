@@ -64,7 +64,7 @@ const SearchBar = ({
         { label: "Go to Dashboard", path: "/dashboard", icon: LayoutDashboard },
         { label: "View Books Inventory", path: "/books", icon: Book },
         { label: "Track Sales & Orders", path: "/sales", icon: ShoppingCart },
-        { label: "AI Sales Forecasting", path: "/forecast", icon: Brain },
+        { label: "Insights AI & Demand Forecasting", path: "/insights-ai", icon: Brain },
       ]
     },
     {

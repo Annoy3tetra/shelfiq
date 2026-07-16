@@ -33,8 +33,8 @@ const links = [
     icon: <ShoppingCart size={20} />,
   },
   {
-    label: "Forecast",
-    path: "/forecast",
+    label: "Insights AI",
+    path: "/insights-ai",
     icon: <Brain size={20} />,
   },
 ];
