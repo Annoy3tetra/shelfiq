@@ -1,7 +1,4 @@
-from fastapi import APIRouter
-from fastapi import Depends
-from fastapi import HTTPException
-from fastapi import status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 
 from sqlalchemy.orm import Session
 
@@ -148,6 +145,7 @@ def admin_only(
     response_model=MessageResponse,
 )
 def forgot_password(
+    request: Request,
     body: ForgotPasswordRequest,
     db: Session = Depends(get_db),
 ):
@@ -161,7 +159,15 @@ def forgot_password(
 
     if user:
         raw_token = create_reset_token(db, user.id)
-        send_password_reset_email(user.email, raw_token)
+        # Dynamically determine frontend origin from headers or fall back to settings.FRONTEND_URL
+        origin = request.headers.get("origin") or request.headers.get("referer")
+        frontend_url = None
+        if origin:
+            parts = origin.split("/")
+            if len(parts) >= 3:
+                frontend_url = f"{parts[0]}//{parts[2]}"
+        
+        send_password_reset_email(user.email, raw_token, frontend_url=frontend_url)
 
     # Identical response whether or not the email was found
     return {

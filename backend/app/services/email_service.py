@@ -2,6 +2,7 @@ import logging
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from typing import Optional
 
 from app.core.config import settings
 
@@ -81,14 +82,19 @@ def _build_reset_email_html(reset_link: str) -> str:
 </html>"""
 
 
-def send_password_reset_email(to_email: str, reset_token: str) -> None:
+def send_password_reset_email(
+    to_email: str,
+    reset_token: str,
+    frontend_url: Optional[str] = None,
+) -> None:
     """
     Send a password reset email.
 
     If SMTP credentials are not configured, logs the reset link
     to the console (useful for local development).
     """
-    reset_link = f"{settings.FRONTEND_URL}/reset-password?token={reset_token}"
+    base_url = (frontend_url or settings.FRONTEND_URL).rstrip("/")
+    reset_link = f"{base_url}/reset-password?token={reset_token}"
 
     # Dev fallback: print to console if SMTP not configured
     if not settings.SMTP_USER or not settings.SMTP_PASSWORD:

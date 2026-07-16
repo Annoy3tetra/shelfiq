@@ -10,7 +10,11 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
 
     # CORS Origins (supports JSON list or comma-separated string)
-    CORS_ORIGINS: Union[List[str], str] = ["http://localhost:5173", "http://localhost:5174"]
+    CORS_ORIGINS: Union[List[str], str] = [
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "https://shelfiq-three.vercel.app"
+]
 
     # SMTP (Gmail) — optional for dev; reset links print to console if unset
     SMTP_HOST: str = "smtp.gmail.com"
@@ -19,10 +23,10 @@ class Settings(BaseSettings):
     SMTP_PASSWORD: Optional[str] = None
 
     # Frontend URL for building reset links
-    FRONTEND_URL: str = "http://localhost:5173"
+    FRONTEND_URL: str = "https://shelfiq-three.vercel.app"
 
     # Backend URL & Uploads directory for profile images (development mode)
-    BACKEND_URL: str = "http://localhost:8000"
+    BACKEND_URL: str = "https://shelfiq-backend-68bj.onrender.com"
     UPLOAD_DIR: str = "uploads/profiles"
 
     # Cloudinary (production mode — optional)
